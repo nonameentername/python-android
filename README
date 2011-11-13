@@ -1,0 +1,11 @@
+Reference:
+    http://randomsplat.com/id5-cross-compiling-python-for-embedded-linux.html
+    http://mdqinc.com/blog/2011/09/cross-compiling-python-for-android/
+
+./bootstrap.sh
+    Downloads Python-2.7.2 source
+    patches Python for android
+    builds hostpython and hostpgen
+
+./build.sh
+    builds python library for android
