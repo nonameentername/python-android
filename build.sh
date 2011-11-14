@@ -1,29 +1,43 @@
 #!/usr/bin/env sh
 
-export NDK="$HOME/source/android-ndk"
-
 export ROOTDIR=`pwd`
 export HOSTPYTHON=$ROOTDIR/hostpython
 export HOSTPGEN=$ROOTDIR/hostpgen
 
-export ANDROID_NDK=$NDK
-export PATH="$ANDROID_NDK/toolchains/arm-linux-androideabi-4.4.3/prebuilt/linux-x86/bin/:$ANDROID_NDK:$ANDROID_NDK/tools:/usr/local/bin:/usr/bin:/bin"
+export NDK="$HOME/source/android-ndk"
+export SDK="$HOME/source/android-sdk/"
+export NDKPLATFORM="$NDK/platforms/android-5/arch-arm"
+
+export PATH="$NDK/toolchains/arm-eabi-4.4.3/prebuilt/linux-x86/bin/:$NDK:$SDK/tools:$PATH"
+
+export PYVERSION="2.7.1"
+
 export ARCH="armeabi"
-export CFLAGS="-DANDROID -mandroid -fomit-frame-pointer --sysroot $ANDROID_NDK/platforms/android-5/arch-arm"
+#export ARCH="armeabi-v7a"
+
+# to override the default optimization, set OFLAG
+#export OFLAG="-Os"
+#export OFLAG="-O2"
+
+export CFLAGS="-mandroid $OFLAG -fomit-frame-pointer --sysroot $NDKPLATFORM"
+if [ $ARCH == "armeabi-v7a" ]; then
+    CFLAGS+=" -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb"
+fi
 export CXXFLAGS="$CFLAGS"
+
 export CC="arm-linux-androideabi-gcc $CFLAGS"
 export CXX="arm-linux-androideabi-g++ $CXXFLAGS"
 export AR="arm-linux-androideabi-ar"
 export RANLIB="arm-linux-androideabi-ranlib"
 export STRIP="arm-linux-androideabi-strip --strip-unneeded"
+export MAKE="make -j4"
 
-export PYTHONHOME="$ROOTDIR/build"
+#export PYTHONHOME="$ROOTDIR/build"
 
 cd $ROOTDIR/Python
-./configure LDFLAGS="-Wl,--allow-shlib-undefined" CFLAGS="-mandroid -fomit-frame-pointer --sysroot $ANDROID_NDK/platforms/android-5/arch-arm" HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN --host=arm-eabi --build=i686-pc-linux-gnu --enable-shared --prefix="$ROOTDIR/build"
+./configure --host=arm-eabi --prefix="$ROOTDIR/build" --enable-shared
 
-sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
+#sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
 
-#BLDSHARED="arm-linux-androideabi-gcc -shared" 
-make -j4 HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes
-make install -j4 HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes prefix=$ROOTDIR/build
+$MAKE HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes INSTSONAME=libpython2.7.so
+$MAKE install HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes INSTSONAME=libpython2.7.so

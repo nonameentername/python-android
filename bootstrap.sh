@@ -17,6 +17,7 @@ if [ ! -e 'Python' ]; then
     cd $ROOTDIR/Python
     patch -p1 < ../patch/Python-2.7.2-xcompile.patch
     patch -p1 < ../patch/Python-2.7.2-android.patch
+    cp -r $ROOTDIR/modules/sqlite3/ $ROOTDIR/Python/Modules/
 fi
 
 cd $ROOTDIR/Python-host
