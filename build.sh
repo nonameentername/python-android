@@ -10,7 +10,7 @@ export NDKPLATFORM="$NDK/platforms/android-5/arch-arm"
 
 export PATH="$NDK/toolchains/arm-eabi-4.4.3/prebuilt/linux-x86/bin/:$NDK:$SDK/tools:$PATH"
 
-export PYVERSION="2.7.1"
+export PYVERSION="2.7.2"
 
 export ARCH="armeabi"
 #export ARCH="armeabi-v7a"
