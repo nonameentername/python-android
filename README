@@ -9,3 +9,6 @@ Reference:
 
 ./build.sh
     builds python library for android
+
+./package.sh
+    installs python on android device //thanks to anthony prieur
