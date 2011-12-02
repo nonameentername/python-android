@@ -31,14 +31,18 @@ export AR="arm-linux-androideabi-ar"
 export RANLIB="arm-linux-androideabi-ranlib"
 export STRIP="arm-linux-androideabi-strip --strip-unneeded"
 export BLDSHARED="arm-linux-androideabi-gcc -shared"
+export LDSHARED="arm-linux-androideabi-ld"
 export MAKE="make -j4"
 
 #export PYTHONHOME="$ROOTDIR/build"
 
 cd $ROOTDIR/Python
-./configure --host=arm-eabi --prefix="$ROOTDIR/build" --enable-shared
+./configure --host=arm-eabi --build=x86_64-linux-gnu
 
-#sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
+sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
 
-$MAKE HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN BLDSHARED="$BLDSHARED" CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes INSTSONAME=libpython2.7.so
-$MAKE install HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN BLDSHARED="$BLDSHARED" CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes INSTSONAME=libpython2.7.so
+$MAKE HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN BLDSHARED="$BLDSHARED" CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes \
+HOSTARCH=arm-linux BUILDARCH=x86_64-linux-gnu INSTSONAME=libpython2.7.so
+
+$MAKE install HOSTPYTHON=$HOSTPYTHON BLDSHARED="$BLDSHARED" CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes INSTSONAME=libpython2.7.so \
+prefix="$ROOTDIR/build" 
