@@ -1,6 +1,6 @@
-diff -Naur Python-2.7.2Orig//configure Python-2.7.2/configure
---- Python-2.7.2Orig//configure	2011-06-12 01:46:28.000000000 +1000
-+++ Python-2.7.2/configure	2011-08-23 18:58:21.545627778 +1000
+diff -urN Python-2.7.2/configure ltib/rpm/BUILD/Python-2.7.2/configure
+--- Python-2.7.2/configure	2011-06-11 11:46:28.000000000 -0400
++++ ltib/rpm/BUILD/Python-2.7.2/configure	2011-11-14 12:10:41.011373524 -0500
 @@ -13673,7 +13673,7 @@
    $as_echo_n "(cached) " >&6
  else
@@ -19,9 +19,9 @@ diff -Naur Python-2.7.2Orig//configure Python-2.7.2/configure
  then
  
  $as_echo "#define PY_FORMAT_LONG_LONG \"ll\"" >>confdefs.h
-diff -Naur Python-2.7.2Orig//Makefile.pre.in Python-2.7.2/Makefile.pre.in
---- Python-2.7.2Orig//Makefile.pre.in	2011-06-12 01:46:26.000000000 +1000
-+++ Python-2.7.2/Makefile.pre.in	2011-08-23 18:59:40.055627759 +1000
+diff -urN Python-2.7.2/Makefile.pre.in ltib/rpm/BUILD/Python-2.7.2/Makefile.pre.in
+--- Python-2.7.2/Makefile.pre.in	2011-06-11 11:46:26.000000000 -0400
++++ ltib/rpm/BUILD/Python-2.7.2/Makefile.pre.in	2011-11-14 12:10:41.013373444 -0500
 @@ -182,6 +182,7 @@
  
  PYTHON=		python$(EXE)
@@ -104,32 +104,91 @@ diff -Naur Python-2.7.2Orig//Makefile.pre.in Python-2.7.2/Makefile.pre.in
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
-diff -Naur Python-2.7.2Orig//setup.py Python-2.7.2/setup.py
---- Python-2.7.2Orig//setup.py	2011-06-12 01:46:28.000000000 +1000
-+++ Python-2.7.2/setup.py	2011-08-23 18:58:21.535627778 +1000
-@@ -23,6 +23,10 @@
- # This global variable is used to hold the list of modules to be disabled.
- disabled_module_list = []
+diff -urN Python-2.7.2/setup.py ltib/rpm/BUILD/Python-2.7.2/setup.py
+--- Python-2.7.2/setup.py	2011-06-11 11:46:28.000000000 -0400
++++ ltib/rpm/BUILD/Python-2.7.2/setup.py	2011-11-14 12:13:02.175758583 -0500
+@@ -145,6 +145,7 @@
+     def __init__(self, dist):
+         build_ext.__init__(self, dist)
+         self.failed = []
++        self.cross_compile = os.environ.get('CROSS_COMPILE_TARGET') == 'yes'
  
-+# _ctypes fails to cross-compile due to the libffi configure script.
-+if os.environ.has_key('PYTHONXCPREFIX'):
-+    disabled_module_list.append('_ctypes')
-+
- def add_dir_to_list(dirlist, dir):
-     """Add the directory 'dir' to the list 'dirlist' (at the front) if
-     1) 'dir' is not already in 'dirlist'
-@@ -278,6 +282,14 @@
+     def build_extensions(self):
+ 
+@@ -278,6 +279,14 @@
                            (ext.name, sys.exc_info()[1]))
              self.failed.append(ext.name)
              return
 +
-+        # Inport check will not work when cross-compiling.
++        # Import check will not work when cross-compiling.
 +        if os.environ.has_key('PYTHONXCPREFIX'):
 +            self.announce(
-+                'WARNING: skipping inport check for cross-compiled: "%s"' %
++                'WARNING: skipping import check for cross-compiled: "%s"' %
 +                ext.name)
 +            return
 +
          # Workaround for Mac OS X: The Carbon-based modules cannot be
          # reliably imported into a command-line Python
          if 'Carbon' in ext.extra_link_args:
+@@ -369,9 +378,10 @@
+ 
+     def detect_modules(self):
+         # Ensure that /usr/local is always used
+-        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+-        add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+-        self.add_multiarch_paths()
++        if not self.cross_compile:
++            add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
++            add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
++            self.add_multiarch_paths()
+ 
+         # Add paths specified in the environment variables LDFLAGS and
+         # CPPFLAGS for header and library files.
+@@ -408,7 +418,8 @@
+                         add_dir_to_list(dir_list, directory)
+ 
+         if os.path.normpath(sys.prefix) != '/usr' \
+-                and not sysconfig.get_config_var('PYTHONFRAMEWORK'):
++                and not sysconfig.get_config_var('PYTHONFRAMEWORK') \
++                and not self.cross_compile:
+             # OSX note: Don't add LIBDIR and INCLUDEDIR to building a framework
+             # (PYTHONFRAMEWORK is set) to avoid # linking problems when
+             # building a framework with different architectures than
+@@ -426,11 +437,14 @@
+         # lib_dirs and inc_dirs are used to search for files;
+         # if a file is found in one of those directories, it can
+         # be assumed that no additional -I,-L directives are needed.
+-        lib_dirs = self.compiler.library_dirs + [
+-            '/lib64', '/usr/lib64',
+-            '/lib', '/usr/lib',
+-            ]
+-        inc_dirs = self.compiler.include_dirs + ['/usr/include']
++        lib_dirs = self.compiler.library_dirs
++        inc_dirs = self.compiler.include_dirs
++        if not self.cross_compile:
++            lib_dirs += [
++                '/lib64', '/usr/lib64',
++                '/lib', '/usr/lib',
++                ]
++            inc_dirs += ['/usr/include']
+         exts = []
+         missing = []
+ 
+@@ -1864,8 +1878,15 @@
+ 
+                 # Pass empty CFLAGS because we'll just append the resulting
+                 # CFLAGS to Python's; -g or -O2 is to be avoided.
+-                cmd = "cd %s && env CFLAGS='' '%s/configure' %s" \
+-                      % (ffi_builddir, ffi_srcdir, " ".join(config_args))
++                if self.cross_compile:
++                    cmd = "cd %s && env CFLAGS='' %s/configure --host=%s --build=%s %s" \
++                          % (ffi_builddir, ffi_srcdir,
++                             os.environ.get('HOSTARCH'),
++                             os.environ.get('BUILDARCH'),
++                             " ".join(config_args))
++                else:
++                    cmd = "cd %s && env CFLAGS='' '%s/configure' %s" \
++                          % (ffi_builddir, ffi_srcdir, " ".join(config_args))
+ 
+                 res = os.system(cmd)
+                 if res or not os.path.exists(ffi_configfile):

@@ -7,3 +7,4 @@ hostpython
 prebuilt/
 obj/
 libs/
+release/
