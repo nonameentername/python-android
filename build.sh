@@ -30,8 +30,7 @@ export CXX="arm-linux-androideabi-g++ $CXXFLAGS"
 export AR="arm-linux-androideabi-ar"
 export RANLIB="arm-linux-androideabi-ranlib"
 export STRIP="arm-linux-androideabi-strip --strip-unneeded"
-export BLDSHARED="arm-linux-androideabi-gcc -shared"
-export LDSHARED="$ROOTDIR/ldshared"
+export BLDSHARED="arm-linux-androideabi-gcc -fPIC -shared"
 export MAKE="make -j4"
 
 export PYTHONHOME="$ROOTDIR/build"
@@ -40,9 +39,7 @@ ndk-build V=1 sqlite3
 export CC="$CC -I$ROOTDIR/modules/sqlite3"
 
 cd $ROOTDIR/Python
-./configure --host=arm-eabi --build=x86_64-linux-gnu
-
-sed -i "s|^INSTSONAME=\(.*.so\).*|INSTSONAME=\\1|g" Makefile
+./configure --host=arm-eabi --build=x86_64-linux-gnu --enable-shared
 
 $MAKE HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN BLDSHARED="$BLDSHARED" CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes \
 HOSTARCH=arm-linux BUILDARCH=x86_64-linux-gnu INSTSONAME=libpython2.7.so
