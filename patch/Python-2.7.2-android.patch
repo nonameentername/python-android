@@ -86,3 +86,16 @@ diff -Naur Python-2.7.2orig//Python/pystrtod.c Python-2.7.2/Python/pystrtod.c
  
      if (decimal_point[0] != '.' || decimal_point[1] != 0) {
          size_t decimal_point_len = strlen(decimal_point);
+diff -Naur Python-2.7.2orig//setup.py Python-2.7.2/setup.py
+--- Python-2.7.2orig//setup.py	2011-12-04 00:08:02.000000000 -0600
++++ Python-2.7.2/setup.py	2011-12-04 00:09:29.000000000 -0600
+@@ -1075,6 +1075,9 @@
+             if sqlite_libfile:
+                 sqlite_libdir = [os.path.abspath(os.path.dirname(sqlite_libfile))]
+ 
++        sqlite_incdir = '../jni/sqlite3'
++        sqlite_libdir = ['../obj/local/'+os.environ['ARCH']]
++
+         if sqlite_incdir and sqlite_libdir:
+             sqlite_srcs = ['_sqlite/cache.c',
+                 '_sqlite/connection.c',

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-export ROOTDIR=`pwd`
+export ROOTDIR=$(dirname $(readlink -f $0))
 export HOSTPYTHON=$ROOTDIR/hostpython
 export HOSTPGEN=$ROOTDIR/hostpgen
 
@@ -31,10 +31,13 @@ export AR="arm-linux-androideabi-ar"
 export RANLIB="arm-linux-androideabi-ranlib"
 export STRIP="arm-linux-androideabi-strip --strip-unneeded"
 export BLDSHARED="arm-linux-androideabi-gcc -shared"
-export LDSHARED="arm-linux-androideabi-ld"
+export LDSHARED="$ROOTDIR/ldshared"
 export MAKE="make -j4"
 
-#export PYTHONHOME="$ROOTDIR/build"
+export PYTHONHOME="$ROOTDIR/build"
+
+ndk-build V=1 sqlite3
+export CC="$CC -I$ROOTDIR/modules/sqlite3"
 
 cd $ROOTDIR/Python
 ./configure --host=arm-eabi --build=x86_64-linux-gnu

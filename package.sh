@@ -5,8 +5,8 @@ if [ $# -ne 1 ]; then
     exit 0
 fi
 
-ROOTDIR=`pwd`
-PACKAGE=$1
+export ROOTDIR=$(dirname $(readlink -f $0))
+export PACKAGE=$1
 
 yes | rm -r $ROOTDIR/release
 
@@ -20,6 +20,7 @@ cat $ROOTDIR/standalone_python.sh | sed -e s"/<PACKAGE>/$PACKAGE/g" > $ROOTDIR/r
 cp -r $ROOTDIR/build/bin/python $ROOTDIR/release/$PACKAGE/files/python/bin/python
 cp -r $ROOTDIR/build/include/* $ROOTDIR/release/$PACKAGE/files/python/include/
 cp -r $ROOTDIR/build/lib/libpython2.7.so $ROOTDIR/release/$PACKAGE/files/python/lib/libpython2.7.so
+cp -r $ROOTDIR/libs/armeabi/libsqlite3.so $ROOTDIR/release/$PACKAGE/files/python/lib/libsqlite3.so
 cp -r $ROOTDIR/build/lib/python2.7/lib-dynload/* $ROOTDIR/release/$PACKAGE/files/python/lib/python2.7/lib-dynload/
 cp -r $ROOTDIR/build/lib/python2.7/config/* $ROOTDIR/release/$PACKAGE/files/python/lib/python2.7/config/
 cp -r $ROOTDIR/build/lib/python2.7/* $ROOTDIR/release/$PACKAGE/extras/python/
