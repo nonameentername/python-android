@@ -30,19 +30,36 @@ export CXX="arm-linux-androideabi-g++ $CXXFLAGS"
 export AR="arm-linux-androideabi-ar"
 export RANLIB="arm-linux-androideabi-ranlib"
 export STRIP="arm-linux-androideabi-strip --strip-unneeded"
-export BLDSHARED="arm-linux-androideabi-gcc -fPIC -shared"
+export BLDSHARED="arm-linux-androideabi-gcc -fPIC -shared $CFLAGS"
 export MAKE="make -j4"
 
 export PYTHONHOME="$ROOTDIR/build"
 
-ndk-build V=1 sqlite3
-export CC="$CC -I$ROOTDIR/modules/sqlite3"
+build_python() {
+    cd $ROOTDIR/Python
+    make distclean
+    ./configure --host=arm-eabi --build=x86_64-linux-gnu $ENABLE_SHARED disable-HAVE_FDATASYNC
+    cat pyconfig.h \
+    | sed -e '/HAVE_FDATASYNC/ c#undef HAVE_FDATASYNC' \
+    | sed -e '/HAVE_KILLPG/ c#undef HAVE_KILLPG' \
+    > temp
+    mv temp pyconfig.h
 
-cd $ROOTDIR/Python
-./configure --host=arm-eabi --build=x86_64-linux-gnu --enable-shared
+    $MAKE HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN BLDSHARED="$BLDSHARED" CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes \
+    HOSTARCH=arm-linux BUILDARCH=x86_64-linux-gnu $SONAME
 
-$MAKE HOSTPYTHON=$HOSTPYTHON HOSTPGEN=$HOSTPGEN BLDSHARED="$BLDSHARED" CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes \
-HOSTARCH=arm-linux BUILDARCH=x86_64-linux-gnu INSTSONAME=libpython2.7.so
+    $MAKE install HOSTPYTHON=$HOSTPYTHON BLDSHARED="$BLDSHARED" CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes \
+    prefix="$ROOTDIR/build" $SONAME 
+}
 
-$MAKE install HOSTPYTHON=$HOSTPYTHON BLDSHARED="$BLDSHARED" CROSS_COMPILE=arm-eabi- CROSS_COMPILE_TARGET=yes INSTSONAME=libpython2.7.so \
-prefix="$ROOTDIR/build" 
+
+export ENABLE_SHARED="--enable-shared"
+export SONAME="INSTSONAME=libpython2.7.so"
+build_python
+
+ndk-build
+export CC="$CC -I$ROOTDIR/jni/sqlite3"
+
+export ENABLE_SHARED=""
+export SONAME=""
+build_python
