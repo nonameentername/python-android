@@ -40,6 +40,7 @@ build_python() {
     cat pyconfig.h \
     | sed -e '/HAVE_FDATASYNC/ c#undef HAVE_FDATASYNC' \
     | sed -e '/HAVE_KILLPG/ c#undef HAVE_KILLPG' \
+    | sed -e '/HAVE_GETHOSTBYNAME_R/ c#undef HAVE_GETHOSTBYNAME_R' \
     > temp
     mv temp pyconfig.h
 
@@ -62,7 +63,7 @@ mv $ROOTDIR/Python/libpython2.7.so $ROOTDIR
 
 
 export MODULE=""
-export BLDSHARED="arm-linux-androideabi-gcc -shared $CFLAGS -L$ROOTDIR -lpython2.7"
+export BLDSHARED="arm-linux-androideabi-gcc -shared $CFLAGS -L$ROOTDIR -lpython2.7 -Wl,--no-undefined"
 
 build_python
 yes | mv $ROOTDIR/libpython2.7.so $ROOTDIR/build/lib/libpython2.7.so
