@@ -1,6 +1,27 @@
+diff -Naur Python-2.7.2orig//Modules/_multiprocessing/multiprocessing.c Python-2.7.2/Modules/_multiprocessing/multiprocessing.c
+--- Python-2.7.2orig//Modules/_multiprocessing/multiprocessing.c	2011-06-11 10:46:27.000000000 -0500
++++ Python-2.7.2/Modules/_multiprocessing/multiprocessing.c	2011-12-06 23:51:06.000000000 -0600
+@@ -122,7 +122,7 @@
+     cmsg->cmsg_type = SCM_RIGHTS;
+     cmsg->cmsg_len = CMSG_LEN(sizeof(int));
+     msg.msg_controllen = cmsg->cmsg_len;
+-    *CMSG_DATA(cmsg) = fd;
++    *(int*)CMSG_DATA(cmsg) = fd;
+ 
+     Py_BEGIN_ALLOW_THREADS
+     res = sendmsg(conn, &msg, 0);
+@@ -165,7 +165,7 @@
+     if (res < 0)
+         return PyErr_SetFromErrno(PyExc_OSError);
+ 
+-    fd = *CMSG_DATA(cmsg);
++    fd = *(int*)CMSG_DATA(cmsg);
+     return Py_BuildValue("i", fd);
+ }
+ 
 diff -Naur Python-2.7.2orig//Modules/posixmodule.c Python-2.7.2/Modules/posixmodule.c
 --- Python-2.7.2orig//Modules/posixmodule.c	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Modules/posixmodule.c	2011-11-13 12:02:00.000000000 -0600
++++ Python-2.7.2/Modules/posixmodule.c	2011-12-06 23:51:06.000000000 -0600
 @@ -3787,13 +3787,6 @@
      slave_fd = open(slave_name, O_RDWR | O_NOCTTY); /* open slave */
      if (slave_fd < 0)
@@ -17,7 +38,7 @@ diff -Naur Python-2.7.2orig//Modules/posixmodule.c Python-2.7.2/Modules/posixmod
      return Py_BuildValue("(ii)", master_fd, slave_fd);
 diff -Naur Python-2.7.2orig//Modules/pwdmodule.c Python-2.7.2/Modules/pwdmodule.c
 --- Python-2.7.2orig//Modules/pwdmodule.c	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Modules/pwdmodule.c	2011-11-13 12:04:25.000000000 -0600
++++ Python-2.7.2/Modules/pwdmodule.c	2011-12-06 23:51:06.000000000 -0600
 @@ -75,11 +75,7 @@
  #endif
      SETI(setIndex++, p->pw_uid);
@@ -32,7 +53,7 @@ diff -Naur Python-2.7.2orig//Modules/pwdmodule.c Python-2.7.2/Modules/pwdmodule.
  
 diff -Naur Python-2.7.2orig//Objects/stringlib/formatter.h Python-2.7.2/Objects/stringlib/formatter.h
 --- Python-2.7.2orig//Objects/stringlib/formatter.h	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Objects/stringlib/formatter.h	2011-11-13 11:59:49.000000000 -0600
++++ Python-2.7.2/Objects/stringlib/formatter.h	2011-12-06 23:51:06.000000000 -0600
 @@ -639,13 +639,7 @@
  get_locale_info(int type, LocaleInfo *locale_info)
  {
@@ -50,7 +71,7 @@ diff -Naur Python-2.7.2orig//Objects/stringlib/formatter.h Python-2.7.2/Objects/
          locale_info->thousands_sep = ",";
 diff -Naur Python-2.7.2orig//Objects/stringlib/localeutil.h Python-2.7.2/Objects/stringlib/localeutil.h
 --- Python-2.7.2orig//Objects/stringlib/localeutil.h	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Objects/stringlib/localeutil.h	2011-11-13 11:55:37.000000000 -0600
++++ Python-2.7.2/Objects/stringlib/localeutil.h	2011-12-06 23:51:06.000000000 -0600
 @@ -202,9 +202,8 @@
                                    Py_ssize_t n_digits,
                                    Py_ssize_t min_width)
@@ -65,7 +86,7 @@ diff -Naur Python-2.7.2orig//Objects/stringlib/localeutil.h Python-2.7.2/Objects
                                             min_width, grouping, thousands_sep);
 diff -Naur Python-2.7.2orig//Python/pystrtod.c Python-2.7.2/Python/pystrtod.c
 --- Python-2.7.2orig//Python/pystrtod.c	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Python/pystrtod.c	2011-11-13 11:59:00.000000000 -0600
++++ Python-2.7.2/Python/pystrtod.c	2011-12-06 23:51:06.000000000 -0600
 @@ -138,8 +138,7 @@
  
      fail_pos = NULL;
@@ -87,8 +108,8 @@ diff -Naur Python-2.7.2orig//Python/pystrtod.c Python-2.7.2/Python/pystrtod.c
      if (decimal_point[0] != '.' || decimal_point[1] != 0) {
          size_t decimal_point_len = strlen(decimal_point);
 diff -Naur Python-2.7.2orig//setup.py Python-2.7.2/setup.py
---- Python-2.7.2orig//setup.py	2011-12-04 00:08:02.000000000 -0600
-+++ Python-2.7.2/setup.py	2011-12-04 00:09:29.000000000 -0600
+--- Python-2.7.2orig//setup.py	2011-12-06 23:46:54.000000000 -0600
++++ Python-2.7.2/setup.py	2011-12-06 23:51:06.000000000 -0600
 @@ -1075,6 +1075,9 @@
              if sqlite_libfile:
                  sqlite_libdir = [os.path.abspath(os.path.dirname(sqlite_libfile))]
