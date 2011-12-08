@@ -41,6 +41,7 @@ build_python() {
     | sed -e '/HAVE_FDATASYNC/ c#undef HAVE_FDATASYNC' \
     | sed -e '/HAVE_KILLPG/ c#undef HAVE_KILLPG' \
     | sed -e '/HAVE_GETHOSTBYNAME_R/ c#undef HAVE_GETHOSTBYNAME_R' \
+    | sed -e '/HAVE_DECL_ISFINITE/ c#undef HAVE_DECL_ISFINITE' \
     > temp
     mv temp pyconfig.h
 
