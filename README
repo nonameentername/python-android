@@ -21,7 +21,7 @@ current status:
     bz2                dbm                dl
     gdbm               imageop            linuxaudiodev
     nis                ossaudiodev        readline
-    sunaudiodev        zlib
+    sunaudiodev
     To find the necessary bits, look in setup.py in detect_modules() for the module's name.
 
 
