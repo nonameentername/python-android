@@ -54,7 +54,7 @@ build_python() {
     fi
 }
 
-ndk-build
+NDK_MODULE_PATH=$ROOTDIR/jni ndk-build
 export CC="$CC -I$ROOTDIR/jni/sqlite3"
 
 export MODULE="libpython2.7.so"
