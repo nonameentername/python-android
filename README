@@ -1,6 +1,7 @@
 Reference:
     http://randomsplat.com/id5-cross-compiling-python-for-embedded-linux.html
     http://pygame.renpy.org/
+    http://code.google.com/p/python-for-android/
 
 ./bootstrap.sh
     Downloads Python-2.7.2 source
@@ -17,14 +18,13 @@ Reference:
 current status:
     Python build finished, but the necessary bits to build these modules were not found:
     _bsddb             _curses            _curses_panel
-    _ssl               _tkinter           bsddb185
-    bz2                dbm                dl
-    gdbm               imageop            linuxaudiodev
-    nis                ossaudiodev        readline
-    sunaudiodev
+    _tkinter           bsddb185           bz2
+    dbm                dl                 gdbm
+    imageop            linuxaudiodev      nis
+    ossaudiodev        readline           sunaudiodev
     To find the necessary bits, look in setup.py in detect_modules() for the module's name.
 
 
     Failed to build these modules:
     _ctypes_test       _locale            audioop
-    crypt              grp                spwd
+    grp                spwd

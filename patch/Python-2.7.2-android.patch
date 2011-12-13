@@ -1,6 +1,6 @@
 diff -Naur Python-2.7.2orig//Modules/_multiprocessing/multiprocessing.c Python-2.7.2/Modules/_multiprocessing/multiprocessing.c
 --- Python-2.7.2orig//Modules/_multiprocessing/multiprocessing.c	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Modules/_multiprocessing/multiprocessing.c	2011-12-11 23:41:56.000000000 -0600
++++ Python-2.7.2/Modules/_multiprocessing/multiprocessing.c	2011-12-12 23:18:45.000000000 -0600
 @@ -122,7 +122,7 @@
      cmsg->cmsg_type = SCM_RIGHTS;
      cmsg->cmsg_len = CMSG_LEN(sizeof(int));
@@ -21,7 +21,7 @@ diff -Naur Python-2.7.2orig//Modules/_multiprocessing/multiprocessing.c Python-2
  
 diff -Naur Python-2.7.2orig//Modules/posixmodule.c Python-2.7.2/Modules/posixmodule.c
 --- Python-2.7.2orig//Modules/posixmodule.c	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Modules/posixmodule.c	2011-12-11 23:41:56.000000000 -0600
++++ Python-2.7.2/Modules/posixmodule.c	2011-12-12 23:18:45.000000000 -0600
 @@ -3787,13 +3787,6 @@
      slave_fd = open(slave_name, O_RDWR | O_NOCTTY); /* open slave */
      if (slave_fd < 0)
@@ -38,7 +38,7 @@ diff -Naur Python-2.7.2orig//Modules/posixmodule.c Python-2.7.2/Modules/posixmod
      return Py_BuildValue("(ii)", master_fd, slave_fd);
 diff -Naur Python-2.7.2orig//Modules/pwdmodule.c Python-2.7.2/Modules/pwdmodule.c
 --- Python-2.7.2orig//Modules/pwdmodule.c	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Modules/pwdmodule.c	2011-12-11 23:41:56.000000000 -0600
++++ Python-2.7.2/Modules/pwdmodule.c	2011-12-12 23:18:45.000000000 -0600
 @@ -75,11 +75,7 @@
  #endif
      SETI(setIndex++, p->pw_uid);
@@ -53,7 +53,7 @@ diff -Naur Python-2.7.2orig//Modules/pwdmodule.c Python-2.7.2/Modules/pwdmodule.
  
 diff -Naur Python-2.7.2orig//Modules/termios.c Python-2.7.2/Modules/termios.c
 --- Python-2.7.2orig//Modules/termios.c	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Modules/termios.c	2011-12-11 23:41:56.000000000 -0600
++++ Python-2.7.2/Modules/termios.c	2011-12-12 23:18:45.000000000 -0600
 @@ -227,6 +227,7 @@
      return Py_None;
  }
@@ -83,7 +83,7 @@ diff -Naur Python-2.7.2orig//Modules/termios.c Python-2.7.2/Modules/termios.c
      {"tcflow", termios_tcflow,
 diff -Naur Python-2.7.2orig//Objects/stringlib/formatter.h Python-2.7.2/Objects/stringlib/formatter.h
 --- Python-2.7.2orig//Objects/stringlib/formatter.h	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Objects/stringlib/formatter.h	2011-12-11 23:41:56.000000000 -0600
++++ Python-2.7.2/Objects/stringlib/formatter.h	2011-12-12 23:18:45.000000000 -0600
 @@ -639,13 +639,7 @@
  get_locale_info(int type, LocaleInfo *locale_info)
  {
@@ -101,7 +101,7 @@ diff -Naur Python-2.7.2orig//Objects/stringlib/formatter.h Python-2.7.2/Objects/
          locale_info->thousands_sep = ",";
 diff -Naur Python-2.7.2orig//Objects/stringlib/localeutil.h Python-2.7.2/Objects/stringlib/localeutil.h
 --- Python-2.7.2orig//Objects/stringlib/localeutil.h	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Objects/stringlib/localeutil.h	2011-12-11 23:41:56.000000000 -0600
++++ Python-2.7.2/Objects/stringlib/localeutil.h	2011-12-12 23:18:45.000000000 -0600
 @@ -202,9 +202,8 @@
                                    Py_ssize_t n_digits,
                                    Py_ssize_t min_width)
@@ -116,7 +116,7 @@ diff -Naur Python-2.7.2orig//Objects/stringlib/localeutil.h Python-2.7.2/Objects
                                             min_width, grouping, thousands_sep);
 diff -Naur Python-2.7.2orig//Python/pystrtod.c Python-2.7.2/Python/pystrtod.c
 --- Python-2.7.2orig//Python/pystrtod.c	2011-06-11 10:46:27.000000000 -0500
-+++ Python-2.7.2/Python/pystrtod.c	2011-12-11 23:41:56.000000000 -0600
++++ Python-2.7.2/Python/pystrtod.c	2011-12-12 23:18:45.000000000 -0600
 @@ -138,8 +138,7 @@
  
      fail_pos = NULL;
@@ -139,8 +139,45 @@ diff -Naur Python-2.7.2orig//Python/pystrtod.c Python-2.7.2/Python/pystrtod.c
          size_t decimal_point_len = strlen(decimal_point);
 diff -Naur Python-2.7.2orig//setup.py Python-2.7.2/setup.py
 --- Python-2.7.2orig//setup.py	2011-12-06 23:46:54.000000000 -0600
-+++ Python-2.7.2/setup.py	2011-12-11 23:42:03.000000000 -0600
-@@ -1075,6 +1075,9 @@
++++ Python-2.7.2/setup.py	2011-12-12 23:18:52.000000000 -0600
+@@ -703,11 +703,13 @@
+ 
+         # crypt module.
+ 
+-        if self.compiler.find_library_file(lib_dirs, 'crypt'):
++        crypt_libdir = ['../obj/local/'+os.environ['ARCH']]
++
++        if self.compiler.find_library_file(crypt_libdir, 'crypt'):
+             libs = ['crypt']
+         else:
+             libs = []
+-        exts.append( Extension('crypt', ['cryptmodule.c'], libraries=libs) )
++        exts.append( Extension('crypt', ['cryptmodule.c'], library_dirs=crypt_libdir, libraries=libs) )
+ 
+         # CSV files
+         exts.append( Extension('_csv', ['_csv.c']) )
+@@ -733,6 +735,9 @@
+                                       '/usr/contrib/ssl/lib/'
+                                      ] )
+ 
++        ssl_incs = ['../jni/openssl/include']
++        ssl_libs = ['../obj/local/'+os.environ['ARCH']]
++
+         if (ssl_incs is not None and
+             ssl_libs is not None):
+             exts.append( Extension('_ssl', ['_ssl.c'],
+@@ -767,8 +772,8 @@
+ 
+         min_openssl_ver = 0x00907000
+         have_any_openssl = ssl_incs is not None and ssl_libs is not None
+-        have_usable_openssl = (have_any_openssl and
+-                               openssl_ver >= min_openssl_ver)
++        have_usable_openssl = (have_any_openssl and True)
++                               #openssl_ver >= min_openssl_ver)
+ 
+         if have_any_openssl:
+             if have_usable_openssl:
+@@ -1075,6 +1080,9 @@
              if sqlite_libfile:
                  sqlite_libdir = [os.path.abspath(os.path.dirname(sqlite_libfile))]
  
@@ -150,7 +187,7 @@ diff -Naur Python-2.7.2orig//setup.py Python-2.7.2/setup.py
          if sqlite_incdir and sqlite_libdir:
              sqlite_srcs = ['_sqlite/cache.c',
                  '_sqlite/connection.c',
-@@ -1302,7 +1305,8 @@
+@@ -1302,7 +1310,8 @@
          #
          # You can upgrade zlib to version 1.1.4 yourself by going to
          # http://www.gzip.org/zlib/
@@ -160,7 +197,7 @@ diff -Naur Python-2.7.2orig//setup.py Python-2.7.2/setup.py
          have_zlib = False
          if zlib_inc is not None:
              zlib_h = zlib_inc[0] + '/zlib.h'
-@@ -1317,12 +1321,13 @@
+@@ -1317,12 +1326,13 @@
                      version = line.split()[2]
                      break
              if version >= version_req:
