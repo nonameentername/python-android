@@ -14,6 +14,10 @@ Reference:
 ./package.sh
     installs python on android device //thanks to anthony prieur
 
+./pip_install.sh
+    install python packages using pip.
+    example:
+        ./pip_install.sh python-twitter
 
 current status:
     Python build finished, but the necessary bits to build these modules were not found:
