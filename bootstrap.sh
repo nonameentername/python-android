@@ -28,3 +28,9 @@ if [ ! -e "$ROOTDIR/hostpython" -a ! -e "$ROOTDIR/hostpgen" ]; then
     mv Parser/pgen $ROOTDIR/hostpgen
     make distclean
 fi
+
+cd $ROOTDIR
+
+if [ ! -e 'openssl' ]; then
+    git clone https://github.com/guardianproject/openssl-android.git openssl
+fi

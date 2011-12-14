@@ -33,6 +33,17 @@ export STRIP="arm-linux-androideabi-strip --strip-unneeded"
 export BLDSHARED="arm-linux-androideabi-gcc -shared $CFLAGS"
 export MAKE="make -j4"
 
+build_jni() {
+    cd $ROOTDIR
+    ndk-build
+}
+
+build_openssl() {
+    cd $ROOTDIR/openssl
+    ndk-build
+    cp -r $ROOTDIR/openssl/obj $ROOTDIR/obj
+}
+
 build_python() {
     cd $ROOTDIR/Python
     make distclean
@@ -54,7 +65,9 @@ build_python() {
     fi
 }
 
-NDK_MODULE_PATH=$ROOTDIR/jni ndk-build
+build_jni
+build_openssl
+
 export CC="$CC -I$ROOTDIR/jni/sqlite3"
 
 export MODULE="libpython2.7.so"

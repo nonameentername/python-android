@@ -160,8 +160,8 @@ diff -Naur Python-2.7.2orig//setup.py Python-2.7.2/setup.py
                                        '/usr/contrib/ssl/lib/'
                                       ] )
  
-+        ssl_incs = ['../jni/openssl/include']
-+        ssl_libs = ['../obj/local/'+os.environ['ARCH']]
++        ssl_incs = ['../openssl/include']
++        ssl_libs = ['../openssl/obj/local/'+os.environ['ARCH']]
 +
          if (ssl_incs is not None and
              ssl_libs is not None):
