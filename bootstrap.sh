@@ -19,13 +19,17 @@ if [ ! -e 'Python' ]; then
     patch -p1 < ../patch/Python-2.7.2-android.patch
 fi
 
-if [ ! -e "$ROOTDIR/hostpython" -a ! -e "$ROOTDIR/hostpgen" ]; then
+if [ ! -e "$ROOTDIR/hostpython" -o ! -e "$ROOTDIR/hostpgen" -o ! -e "$ROOTDIR/prebuilt" ]; then
     cd $ROOTDIR/Python-host
     ./configure --prefix=$ROOTDIR/prebuilt
     make -j4
     make install
     mv python $ROOTDIR/hostpython
     mv Parser/pgen $ROOTDIR/hostpgen
+    curl http://python-distribute.org/distribute_setup.py | $ROOTDIR/hostpython
+    curl https://raw.github.com/pypa/pip/master/contrib/get-pip.py | $ROOTDIR/hostpython
+    $ROOTDIR/prebuilt/bin/pip install virtualenv
+    $ROOTDIR/prebuilt/bin/pip install virtualenvwrapper
     make distclean
 fi
 

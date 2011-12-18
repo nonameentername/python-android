@@ -35,7 +35,14 @@ export BLDSHARED="arm-linux-androideabi-gcc -shared $CFLAGS"
 export LDSHARED="$ROOTDIR/ldshared"
 export MAKE="make -j4"
 
-pip install \
-    --install-option="--prefix=$ROOTDIR/build" \
-    --ignore-installed \
+export PYTHONHOME="$ROOTDIR/prebuilt"
+export PYTHONPATH="$PYTHONHOME:$PYTHONHOME/lib/python2.7"
+export LD_LIBRARY_PATH="$PYTHONHOME/lib/python2.7/lib-dynload"
+export PATH="$PYTHONHOME/bin:$PATH"
+
+export PIP_REQUIRE_VIRTUALENV=true
+export PIP_RESPECT_VIRTUALENV=true
+
+pip install \ 
+    --install-option="--prefix=$VIRTUAL_ENV" \
     $@
