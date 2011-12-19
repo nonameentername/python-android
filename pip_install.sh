@@ -43,6 +43,6 @@ export PATH="$PYTHONHOME/bin:$PATH"
 export PIP_REQUIRE_VIRTUALENV=true
 export PIP_RESPECT_VIRTUALENV=true
 
-pip install \ 
+pip install \
     --install-option="--prefix=$VIRTUAL_ENV" \
     $@

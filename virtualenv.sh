@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOTDIR=`dirname $BASH_SOURCE`
+ROOTDIR=$(cd `dirname $BASH_SOURCE` && pwd)
 
 PYTHONHOME="$ROOTDIR/prebuilt"
 PYTHONPATH="$PYTHONHOME:$PYTHONHOME/lib/python2.7:$PYTHONHOME/lib/python2.7/site-packages"
