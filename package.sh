@@ -8,7 +8,7 @@ fi
 export ROOTDIR=$(dirname $(readlink -f $0))
 export PACKAGE=$1
 
-yes | rm -r $ROOTDIR/release
+yes | rm -r $ROOTDIR/release/$PACKAGE
 
 mkdir -p $ROOTDIR/release/$PACKAGE/files/python/bin
 mkdir -p $ROOTDIR/release/$PACKAGE/files/python/include
@@ -24,6 +24,9 @@ cp -r $ROOTDIR/libs/armeabi/libsqlite3.so $ROOTDIR/release/$PACKAGE/files/python
 cp -r $ROOTDIR/build/lib/python2.7/lib-dynload/* $ROOTDIR/release/$PACKAGE/files/python/lib/python2.7/lib-dynload/
 cp -r $ROOTDIR/build/lib/python2.7/config/* $ROOTDIR/release/$PACKAGE/files/python/lib/python2.7/config/
 cp -r $ROOTDIR/build/lib/python2.7/* $ROOTDIR/release/$PACKAGE/extras/python/
+
+#virtualenv
+cp -r $VIRTUAL_ENV/lib/python2.7/site-packages $ROOTDIR/release/$PACKAGE/files/python/lib/python2.7/site-packages
 
 cd $ROOTDIR/release/$PACKAGE/extras/python/
 rm `find . | grep -v "so$\|py$"`
